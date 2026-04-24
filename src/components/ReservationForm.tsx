@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import type { ICourt } from '../types';
 import TimeSlotPicker from './TimeSlotPicker';
+import DatePicker from './DatePicker';
 
 type Step = 'schedule' | 'payment' | 'success';
 type PaymentMethod = 'yape' | 'transfer';
@@ -37,15 +38,6 @@ const DATE_QUICK_OPTIONS = [
   { label: 'Mañana', offset: 1 },
   { label: 'Pasado', offset: 2 },
 ];
-
-const WEEKDAYS = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
-const MONTHS = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
-function formatPrettyDate(iso: string) {
-  if (!iso) return '';
-  const [y, m, d] = iso.split('-').map(Number);
-  const date = new Date(y, m - 1, d);
-  return `${WEEKDAYS[date.getDay()]} ${d} ${MONTHS[m - 1]}`;
-}
 
 export default function ReservationForm({ court, apiUrl }: Props) {
   const [step, setStep] = useState<Step>('schedule');
@@ -301,16 +293,9 @@ export default function ReservationForm({ court, apiUrl }: Props) {
 
       {/* Date picker */}
       <div className="mb-5 sm:mb-6">
-        <div className="flex items-center justify-between mb-2">
-          <label className="block text-sm font-semibold text-gray-700">
-            Fecha <span className="text-red-500">*</span>
-          </label>
-          {date && (
-            <span className="text-xs font-heading font-bold text-primary-600 capitalize">
-              {formatPrettyDate(date)}
-            </span>
-          )}
-        </div>
+        <label className="block text-sm font-semibold text-gray-700 mb-2">
+          Fecha <span className="text-red-500">*</span>
+        </label>
 
         <div className="flex gap-1.5 mb-2.5">
           {DATE_QUICK_OPTIONS.map(({ label, offset }) => {
@@ -337,27 +322,15 @@ export default function ReservationForm({ court, apiUrl }: Props) {
           })}
         </div>
 
-        <div className="relative group">
-          <svg
-            className="w-5 h-5 text-gray-400 group-focus-within:text-primary-500 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none transition-colors"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-          </svg>
-          <input
-            type="date"
-            value={date}
-            min={today}
-            onChange={(e) => {
-              setDate(e.target.value);
-              setStartTime('');
-              setEndTime('');
-            }}
-            className="w-full border border-gray-200 bg-gray-50 focus:bg-white rounded-xl pl-11 pr-3 sm:pr-4 py-3 text-sm sm:text-base font-heading font-bold tracking-tight text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary-200 focus:border-primary-400 transition-colors cursor-pointer"
-          />
-        </div>
+        <DatePicker
+          value={date}
+          min={today}
+          onChange={(iso) => {
+            setDate(iso);
+            setStartTime('');
+            setEndTime('');
+          }}
+        />
       </div>
 
       {/* Time slot picker */}
