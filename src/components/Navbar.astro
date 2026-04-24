@@ -1,0 +1,23 @@
+---
+import AuthWidget from './AuthWidget';
+
+const API_URL = import.meta.env.PUBLIC_API_URL;
+---
+
+<nav class="bg-white shadow-sm sticky top-0 z-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+    <a href="/" class="flex items-center gap-2">
+      <img src="/logo.png" alt="MiCancha" class="h-24 w-32 object-contain" />
+    </a>
+
+    <div class="flex items-center gap-6">
+      <a
+        href="/canchas"
+        class="text-gray-600 hover:text-primary-600 font-medium transition-colors"
+      >
+        Ver Canchas
+      </a>
+      <AuthWidget apiUrl={API_URL} client:load />
+    </div>
+  </div>
+</nav>

@@ -1,0 +1,90 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+const { codigo } = Astro.params;
+const API_URL = import.meta.env.PUBLIC_API_URL;
+---
+
+<Layout title="Estado de reserva">
+  <div class="max-w-lg mx-auto px-4 py-16">
+    <div class="bg-white rounded-2xl shadow-sm p-10 text-center">
+      <div class="text-5xl mb-4">🎫</div>
+      <h1 class="text-2xl font-bold text-gray-900 mb-2">Tu reserva</h1>
+      <p class="text-gray-500 text-sm mb-6">
+        Comparte este código con el encargado para validar tu acceso.
+      </p>
+
+      <div class="bg-green-50 rounded-2xl p-6 mb-6">
+        <p class="text-xs text-gray-400 uppercase tracking-wide mb-1">Código de reserva</p>
+        <p class="text-3xl font-mono font-bold text-green-700 tracking-widest">{codigo}</p>
+      </div>
+
+      <div id="reservation-details" class="text-sm text-gray-500 mb-6">
+        <div class="inline-block animate-spin rounded-full h-5 w-5 border-b-2 border-green-600 mb-2"></div>
+        <p>Cargando información...</p>
+      </div>
+
+      <a
+        href="/canchas"
+        class="inline-block text-sm text-green-600 hover:text-green-700 font-medium transition-colors"
+      >
+        Ver más canchas →
+      </a>
+    </div>
+  </div>
+</Layout>
+
+<script define:vars={{ codigo, API_URL }}>
+  const token = localStorage.getItem('auth_token');
+  const el = document.getElementById('reservation-details');
+
+  if (!token || !el) {
+    if (el) el.innerHTML = '<p class="text-gray-400 text-sm">Inicia sesión para ver los detalles de tu reserva.</p>';
+  } else {
+    fetch(`${API_URL}/api/reservations/my`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((r) => r.json())
+      .then((json) => {
+        const reservation = json.data?.find((r) => r.reservationCode === codigo);
+        if (!reservation) {
+          el.innerHTML = '<p class="text-gray-400 text-sm">No se encontraron detalles para este código.</p>';
+          return;
+        }
+
+        const statusMap = {
+          pending: { label: 'Pendiente de aprobación', color: 'bg-yellow-100 text-yellow-800' },
+          approved: { label: 'Aprobada ✓', color: 'bg-green-100 text-green-800' },
+          rejected: { label: 'Rechazada', color: 'bg-red-100 text-red-800' },
+          used: { label: 'Utilizada', color: 'bg-gray-100 text-gray-800' },
+        };
+
+        const status = statusMap[reservation.status] ?? { label: reservation.status, color: 'bg-gray-100' };
+        const court = reservation.courtId;
+
+        el.innerHTML = `
+          <div class="space-y-3 text-left bg-gray-50 rounded-xl p-4">
+            <div class="flex justify-between">
+              <span class="text-gray-400">Cancha</span>
+              <span class="font-medium text-gray-800">${court?.name ?? '—'}</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-400">Fecha</span>
+              <span class="font-medium text-gray-800">${reservation.date}</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-400">Horario</span>
+              <span class="font-medium text-gray-800">${reservation.startTime} – ${reservation.endTime}</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-gray-400">Estado</span>
+              <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold ${status.color}">${status.label}</span>
+            </div>
+          </div>
+        `;
+      })
+      .catch(() => {
+        el.innerHTML = '<p class="text-red-400 text-sm">Error al cargar la información.</p>';
+      });
+  }
+</script>

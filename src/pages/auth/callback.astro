@@ -1,0 +1,32 @@
+---
+// Token llega en el hash de la URL (#token=xxx), nunca en query string
+// El hash no se envía al servidor, por eso se procesa en el cliente
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Autenticando... | MiCancha</title>
+  </head>
+  <body class="min-h-screen flex items-center justify-center bg-gray-50">
+    <div class="text-center">
+      <div class="inline-block animate-spin rounded-full h-10 w-10 border-b-2 border-green-600 mb-4"></div>
+      <p class="text-gray-500 text-sm">Iniciando sesión...</p>
+    </div>
+
+    <script>
+      const hash = window.location.hash.substring(1);
+      const params = new URLSearchParams(hash);
+      const token = params.get('token');
+
+      if (token) {
+        localStorage.setItem('auth_token', token);
+        window.location.replace('/');
+      } else {
+        window.location.replace('/?error=auth_failed');
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,266 @@
+---
+import Layout from '../layouts/Layout.astro';
+import type { ICourt } from '../types';
+
+const API_URL = import.meta.env.PUBLIC_API_URL;
+
+let featuredCourts: ICourt[] = [];
+try {
+  const res = await fetch(`${API_URL}/api/courts`);
+  const json = await res.json();
+  if (json.success) featuredCourts = (json.data ?? []).slice(0, 3);
+} catch {
+  // silently degrade — courts section simply won't render
+}
+---
+
+<Layout title="Inicio">
+
+  <!-- ── HERO ─────────────────────────────────────────────── -->
+  <section class="relative min-h-screen flex items-center justify-center overflow-hidden bg-gray-950">
+    <!-- Background image -->
+    <div class="absolute inset-0">
+      <img
+        src="/img1.webp"
+        alt="Cancha deportiva"
+        class="w-full h-full object-cover"
+        fetchpriority="high"
+      />
+      <div class="absolute inset-0 bg-gradient-to-b from-black/55 via-black/45 to-black/75"></div>
+    </div>
+
+    <!-- Content -->
+    <div class="relative z-10 max-w-5xl mx-auto px-4 text-center">
+
+      <!-- Badge -->
+      <div class="hero-badge inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-full px-5 py-2 mb-8">
+        <span class="w-2 h-2 rounded-full bg-primary-400 animate-pulse"></span>
+        <span class="text-white/90 text-sm font-medium tracking-wide">Reservas en tiempo real</span>
+      </div>
+
+      <!-- Heading -->
+      <h1 class="hero-title font-heading text-6xl sm:text-7xl lg:text-[5.5rem] font-black text-white leading-[1.02] mb-6">
+        Reserva tu<br />
+        <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-emerald-300">
+          cancha
+        </span>
+        <br />deportiva
+      </h1>
+
+      <!-- Subtitle -->
+      <p class="hero-sub text-xl sm:text-2xl text-white/65 max-w-2xl mx-auto mb-10 font-light">
+        Encuentra la cancha perfecta, elige tu horario y confirma tu reserva en minutos.
+      </p>
+
+      <!-- Buttons -->
+      <div class="hero-cta flex flex-col sm:flex-row gap-4 justify-center">
+        <a
+          href="/canchas"
+          class="bg-primary-500 hover:bg-primary-400 text-white px-9 py-4 rounded-2xl font-bold text-lg transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-primary-500/40"
+        >
+          Ver canchas disponibles
+        </a>
+        <a
+          href="/canchas"
+          class="border-2 border-white/30 text-white px-9 py-4 rounded-2xl font-bold text-lg backdrop-blur-sm transition-all duration-300 hover:bg-white/15 hover:border-white/60 hover:scale-105"
+        >
+          Reservar ahora
+        </a>
+      </div>
+    </div>
+
+    <!-- Scroll indicator -->
+    <div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-bounce opacity-60">
+      <span class="text-white text-[0.65rem] tracking-[0.2em] uppercase">Scroll</span>
+      <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+      </svg>
+    </div>
+  </section>
+
+  <!-- ── STATS ─────────────────────────────────────────────── -->
+  <section class="bg-white border-b border-gray-100">
+    <div class="max-w-3xl mx-auto px-4 py-10 grid grid-cols-3 gap-6 text-center">
+      {[
+        { num: '10+',  label: 'Canchas disponibles' },
+        { num: '500+', label: 'Reservas realizadas'  },
+        { num: '4.9★', label: 'Calificación promedio' },
+      ].map(({ num, label }) => (
+        <div class="reveal">
+          <div class="font-heading text-3xl sm:text-4xl font-black text-primary-600">{num}</div>
+          <div class="text-sm text-gray-500 mt-1 font-medium">{label}</div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- ── CANCHAS DESTACADAS ────────────────────────────────── -->
+  {featuredCourts.length > 0 && (
+    <section class="max-w-7xl mx-auto px-4 py-24">
+      <div class="text-center mb-14 reveal">
+        <span class="text-primary-600 font-semibold text-xs uppercase tracking-widest">Disponibles ahora</span>
+        <h2 class="font-heading text-4xl sm:text-5xl font-black text-gray-900 mt-2">Canchas destacadas</h2>
+        <p class="text-gray-500 mt-3 text-lg">Elige la que más te guste y reserva hoy</p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        {featuredCourts.map((court, i) => (
+          <a
+            href={`/canchas/${court._id}`}
+            class="group bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 reveal"
+            style={`transition-delay:${i * 80}ms`}
+          >
+            {court.images?.[0] ? (
+              <div class="h-52 overflow-hidden relative">
+                <img
+                  src={court.images[0]}
+                  alt={court.name}
+                  class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                  loading="lazy"
+                />
+                <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              </div>
+            ) : (
+              <div class="h-52 bg-gradient-to-br from-primary-50 to-emerald-100 flex items-center justify-center text-6xl">
+                ⚽
+              </div>
+            )}
+            <div class="p-6">
+              <h3 class="font-heading font-black text-gray-900 text-xl mb-1">{court.name}</h3>
+              <p class="text-sm text-gray-400 mb-4 flex items-center gap-1">
+                <svg class="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+                </svg>
+                {court.location}
+              </p>
+              <div class="flex items-center justify-between">
+                <div>
+                  <span class="font-heading text-2xl font-black text-primary-600">S/ {court.pricePerHour}</span>
+                  <span class="text-gray-400 text-sm ml-1">/hora</span>
+                </div>
+                <span class="bg-primary-600 group-hover:bg-primary-500 text-white text-sm font-bold px-4 py-2 rounded-xl transition-colors duration-200">
+                  Reservar →
+                </span>
+              </div>
+            </div>
+          </a>
+        ))}
+      </div>
+
+      <div class="text-center mt-12 reveal">
+        <a
+          href="/canchas"
+          class="inline-flex items-center gap-2 text-primary-600 font-bold text-lg hover:text-primary-500 transition-colors group"
+        >
+          Ver todas las canchas
+          <span class="inline-block transition-transform group-hover:translate-x-1">→</span>
+        </a>
+      </div>
+    </section>
+  )}
+
+  <!-- ── CÓMO FUNCIONA ─────────────────────────────────────── -->
+  <section class="bg-gray-50 py-24">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="text-center mb-14 reveal">
+        <span class="text-primary-600 font-semibold text-xs uppercase tracking-widest">Simple y rápido</span>
+        <h2 class="font-heading text-4xl sm:text-5xl font-black text-gray-900 mt-2">¿Cómo funciona?</h2>
+        <p class="text-gray-500 mt-3 text-lg">Reserva tu cancha en 4 simples pasos</p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {[
+          { icon: '🔍', step: '01', title: 'Elige tu cancha',  desc: 'Explora canchas con precios, horarios e información detallada.' },
+          { icon: '📅', step: '02', title: 'Selecciona horario', desc: 'Elige la fecha y el bloque de horas que mejor te acomode.' },
+          { icon: '💳', step: '03', title: 'Realiza el pago',  desc: 'Paga por Yape o transferencia y sube tu comprobante.' },
+          { icon: '✅', step: '04', title: 'Recibe tu QR',     desc: 'Al confirmar, recibes un correo con tu código QR de acceso.' },
+        ].map(({ icon, step, title, desc }, i) => (
+          <div
+            class="relative bg-white rounded-3xl p-8 shadow-sm overflow-hidden group hover:shadow-md hover:-translate-y-1 transition-all duration-300 reveal"
+            style={`transition-delay:${i * 80}ms`}
+          >
+            <!-- Big step number background -->
+            <div class="absolute top-0 right-0 font-heading font-black text-8xl leading-none pr-4 pt-2 text-gray-100 group-hover:text-primary-50 transition-colors duration-300 select-none pointer-events-none">
+              {step}
+            </div>
+            <div class="relative z-10">
+              <div class="text-4xl mb-4">{icon}</div>
+              <h3 class="font-heading text-lg font-black mb-2 text-gray-900">{title}</h3>
+              <p class="text-gray-500 text-sm leading-relaxed">{desc}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CTA FINAL ─────────────────────────────────────────── -->
+  <section class="relative overflow-hidden bg-gradient-to-br from-primary-700 via-primary-600 to-emerald-700 text-white py-24">
+    <!-- Decorative blobs -->
+    <div class="absolute -top-24 -left-24 w-96 h-96 bg-white/5 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute -bottom-24 -right-24 w-96 h-96 bg-emerald-300/10 rounded-full blur-3xl pointer-events-none"></div>
+
+    <div class="relative z-10 max-w-3xl mx-auto px-4 text-center reveal">
+      <h2 class="font-heading text-4xl sm:text-5xl font-black mb-4">¿Listo para jugar?</h2>
+      <p class="text-primary-100 mb-10 text-lg">Ingresa con tu cuenta de Google y realiza tu primera reserva.</p>
+      <a
+        href="/canchas"
+        class="inline-block bg-white text-primary-700 px-10 py-4 rounded-2xl font-bold text-lg transition-all duration-300 hover:bg-primary-50 hover:scale-105 shadow-xl shadow-black/20"
+      >
+        Ver canchas disponibles
+      </a>
+    </div>
+  </section>
+
+</Layout>
+
+<style>
+  /* ── Hero entrance animations ── */
+  .hero-badge {
+    animation: fadeDown 0.65s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both;
+  }
+  .hero-title {
+    animation: fadeUp 0.75s cubic-bezier(0.22, 1, 0.36, 1) 0.25s both;
+  }
+  .hero-sub {
+    animation: fadeUp 0.75s cubic-bezier(0.22, 1, 0.36, 1) 0.4s both;
+  }
+  .hero-cta {
+    animation: fadeUp 0.75s cubic-bezier(0.22, 1, 0.36, 1) 0.55s both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(32px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── Scroll-reveal base state ── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+                transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>
+
+<script>
+  const observer = new IntersectionObserver(
+    (entries) =>
+      entries.forEach((e) => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          observer.unobserve(e.target);
+        }
+      }),
+    { threshold: 0.12 }
+  );
+  document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
+</script>
