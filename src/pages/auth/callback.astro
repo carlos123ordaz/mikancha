@@ -21,9 +21,18 @@
       const params = new URLSearchParams(hash);
       const token = params.get('token');
 
+      const returnTo = localStorage.getItem('auth_return_to');
+      localStorage.removeItem('auth_return_to');
+
+      // Solo aceptamos rutas relativas dentro de la app — evita open redirect
+      const safeReturnTo =
+        returnTo && returnTo.startsWith('/') && !returnTo.startsWith('//')
+          ? returnTo
+          : '/';
+
       if (token) {
         localStorage.setItem('auth_token', token);
-        window.location.replace('/');
+        window.location.replace(safeReturnTo);
       } else {
         window.location.replace('/?error=auth_failed');
       }

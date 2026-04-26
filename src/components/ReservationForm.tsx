@@ -39,6 +39,9 @@ const DATE_QUICK_OPTIONS = [
   { label: 'Pasado', offset: 2 },
 ];
 
+const PENDING_KEY = 'pending_reservation';
+const RETURN_TO_KEY = 'auth_return_to';
+
 export default function ReservationForm({ court, apiUrl }: Props) {
   const [step, setStep] = useState<Step>('schedule');
   const [date, setDate] = useState('');
@@ -56,7 +59,48 @@ export default function ReservationForm({ court, apiUrl }: Props) {
 
   useEffect(() => {
     setToken(localStorage.getItem('auth_token'));
-  }, []);
+
+    try {
+      const raw = localStorage.getItem(PENDING_KEY);
+      if (!raw) return;
+      const data = JSON.parse(raw);
+      if (data?.courtId === court._id) {
+        if (data.date) setDate(data.date);
+        if (data.startTime) setStartTime(data.startTime);
+        if (data.endTime) setEndTime(data.endTime);
+        if (data.durationHours) setDurationHours(data.durationHours);
+        if (data.paymentMethod) setPaymentMethod(data.paymentMethod);
+        if (data.step) setStep(data.step);
+      }
+      localStorage.removeItem(PENDING_KEY);
+    } catch {
+      localStorage.removeItem(PENDING_KEY);
+    }
+  }, [court._id]);
+
+  function startGoogleLogin() {
+    try {
+      localStorage.setItem(
+        PENDING_KEY,
+        JSON.stringify({
+          courtId: court._id,
+          date,
+          startTime,
+          endTime,
+          durationHours,
+          paymentMethod,
+          step,
+        })
+      );
+      localStorage.setItem(
+        RETURN_TO_KEY,
+        window.location.pathname + window.location.search
+      );
+    } catch {
+      // si localStorage falla, igual seguimos con el login
+    }
+    window.location.href = `${apiUrl}/api/auth/google`;
+  }
 
   const price = court.pricePerHour * durationHours;
 
@@ -69,7 +113,7 @@ export default function ReservationForm({ court, apiUrl }: Props) {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!token) {
-      window.location.href = `${apiUrl}/api/auth/google`;
+      startGoogleLogin();
       return;
     }
     setSubmitting(true);
@@ -268,9 +312,13 @@ export default function ReservationForm({ court, apiUrl }: Props) {
         {!token && (
           <div className="bg-yellow-50 border border-yellow-200 text-yellow-800 px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl text-xs sm:text-sm mb-4">
             Debes{' '}
-            <a href={`${apiUrl}/api/auth/google`} className="font-bold underline">
+            <button
+              type="button"
+              onClick={startGoogleLogin}
+              className="font-bold underline"
+            >
               iniciar sesión
-            </a>{' '}
+            </button>{' '}
             para confirmar la reserva.
           </div>
         )}
