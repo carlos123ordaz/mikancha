@@ -1,0 +1,153 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const API_URL = import.meta.env.PUBLIC_API_URL;
+---
+
+<Layout title="Publica tu cancha" description="¿Tienes una cancha? Publícala en MiCancha y empieza a recibir reservas hoy mismo.">
+
+  <!-- HERO -->
+  <section class="relative overflow-hidden bg-gray-950">
+    <div class="absolute inset-0">
+      <img
+        src="/img1.webp"
+        alt="Cancha deportiva"
+        class="w-full h-full object-cover"
+        fetchpriority="high"
+      />
+      <div class="absolute inset-0 bg-gradient-to-b from-gray-950/75 via-gray-950/55 to-gray-950/90"></div>
+    </div>
+    <div class="absolute -top-24 -left-24 w-96 h-96 bg-primary-500/20 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute -bottom-24 -right-24 w-96 h-96 bg-emerald-300/10 rounded-full blur-3xl pointer-events-none"></div>
+
+    <div class="relative z-10 max-w-3xl mx-auto px-4 py-16 sm:py-20 lg:py-24 text-center">
+      <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-full px-4 py-1.5 mb-6">
+        <span class="w-2 h-2 rounded-full bg-primary-400 animate-pulse"></span>
+        <span class="text-white/90 text-xs sm:text-sm font-medium tracking-wide">Para propietarios</span>
+      </div>
+      <h1 class="font-heading text-3xl sm:text-4xl lg:text-5xl font-black text-white leading-tight mb-4">
+        Publica tu cancha<br/>
+        <span class="text-primary-400">y llena tu agenda</span>
+      </h1>
+      <p class="text-gray-300 text-base sm:text-lg max-w-xl mx-auto">
+        Únete a MiCancha y empieza a recibir reservas online. Déjanos tus datos y te contactamos en menos de 24 horas.
+      </p>
+    </div>
+  </section>
+
+  <!-- FORM -->
+  <section class="max-w-2xl mx-auto px-4 py-12 sm:py-16">
+
+    <div id="form-success" class="hidden bg-primary-50 border border-primary-200 rounded-2xl p-8 text-center">
+      <div class="text-4xl mb-3">🎉</div>
+      <h2 class="font-heading text-xl font-bold text-gray-900 mb-2">¡Mensaje enviado!</h2>
+      <p class="text-gray-600 text-sm">Gracias por tu interés. Te contactaremos pronto.</p>
+    </div>
+
+    <form
+      id="contact-form"
+      class="bg-white border border-gray-100 rounded-2xl shadow-sm p-6 sm:p-8 space-y-5"
+    >
+      <div>
+        <label for="name" class="block text-sm font-semibold text-gray-700 mb-1.5">Nombre completo</label>
+        <input
+          id="name"
+          name="name"
+          type="text"
+          required
+          placeholder="Ej. Juan Pérez"
+          class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-transparent transition"
+        />
+      </div>
+
+      <div>
+        <label for="email" class="block text-sm font-semibold text-gray-700 mb-1.5">Correo electrónico</label>
+        <input
+          id="email"
+          name="email"
+          type="email"
+          required
+          placeholder="tu@correo.com"
+          class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-transparent transition"
+        />
+      </div>
+
+      <div>
+        <label for="phone" class="block text-sm font-semibold text-gray-700 mb-1.5">Teléfono / WhatsApp</label>
+        <input
+          id="phone"
+          name="phone"
+          type="tel"
+          required
+          placeholder="Ej. 987 654 321"
+          class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-transparent transition"
+        />
+      </div>
+
+      <div>
+        <label for="message" class="block text-sm font-semibold text-gray-700 mb-1.5">Cuéntanos sobre tu cancha</label>
+        <textarea
+          id="message"
+          name="message"
+          required
+          rows="4"
+          placeholder="Tipo de cancha, ubicación, disponibilidad horaria, etc."
+          class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-transparent transition resize-none"
+        ></textarea>
+      </div>
+
+      <div id="form-error" class="hidden text-sm text-red-600 bg-red-50 border border-red-200 rounded-xl px-4 py-3"></div>
+
+      <button
+        type="submit"
+        id="submit-btn"
+        class="w-full bg-primary-500 hover:bg-primary-400 text-white font-bold py-3.5 rounded-xl transition-all duration-200 hover:scale-[1.02] hover:shadow-lg hover:shadow-primary-500/30 text-sm"
+      >
+        Enviar solicitud
+      </button>
+    </form>
+  </section>
+</Layout>
+
+<script define:vars={{ API_URL }}>
+  const form = document.getElementById('contact-form');
+  const successBox = document.getElementById('form-success');
+  const errorBox = document.getElementById('form-error');
+  const submitBtn = document.getElementById('submit-btn');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    errorBox.classList.add('hidden');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Enviando...';
+
+    const data = {
+      name: form.name.value.trim(),
+      email: form.email.value.trim(),
+      phone: form.phone.value.trim(),
+      message: form.message.value.trim(),
+    };
+
+    try {
+      const res = await fetch(`${API_URL}/api/contact`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+
+      const json = await res.json();
+
+      if (!res.ok || !json.success) {
+        throw new Error(json.message || 'Error al enviar el mensaje.');
+      }
+
+      form.classList.add('hidden');
+      successBox.classList.remove('hidden');
+    } catch (err) {
+      errorBox.textContent = err.message || 'Ocurrió un error. Intenta de nuevo.';
+      errorBox.classList.remove('hidden');
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Enviar solicitud';
+    }
+  });
+</script>

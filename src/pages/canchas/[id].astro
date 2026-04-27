@@ -262,19 +262,6 @@ const mapsLink = `https://www.google.com/maps/search/?api=1&query=${mapsQuery}`;
             </div>
           </div>
 
-          <!-- Badges de confianza -->
-          <div class="mt-4 grid grid-cols-3 gap-2">
-            {[
-              { icon: '🔒', label: 'Pago seguro' },
-              { icon: '✅', label: 'Confirmación inmediata' },
-              { icon: '📱', label: 'QR de acceso' },
-            ].map((b) => (
-              <div class="bg-white border border-gray-100 rounded-xl p-2.5 sm:p-3 text-center shadow-sm">
-                <div class="text-lg sm:text-xl mb-1">{b.icon}</div>
-                <p class="text-[10px] sm:text-xs text-gray-500 font-medium leading-tight">{b.label}</p>
-              </div>
-            ))}
-          </div>
         </div>
       </div>
 

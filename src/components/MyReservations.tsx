@@ -62,7 +62,7 @@ function QrModal({
   reservation: PopulatedReservation;
   onClose: () => void;
 }) {
-  const qrValue = `${window.location.origin}/reserva/${reservation.reservationCode}?token=${reservation.qrToken}`;
+  const qrValue = reservation.reservationCode;
 
   return (
     <div
@@ -214,7 +214,7 @@ function ReservationCard({ reservation }: { reservation: PopulatedReservation })
 
           {/* Actions */}
           <div className="flex flex-wrap gap-2">
-            {reservation.status === 'approved' && reservation.qrToken && (
+            {reservation.status === 'approved' && (
               <button
                 onClick={() => setShowQr(true)}
                 className="flex-1 inline-flex items-center justify-center gap-2 bg-primary-600 hover:bg-primary-700 active:bg-primary-800 text-white py-2.5 rounded-xl text-sm font-bold transition-colors shadow-sm"
@@ -253,7 +253,7 @@ function ReservationCard({ reservation }: { reservation: PopulatedReservation })
         </div>
       </div>
 
-      {showQr && reservation.qrToken && (
+      {showQr && (
         <QrModal reservation={reservation} onClose={() => setShowQr(false)} />
       )}
     </>
