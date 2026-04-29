@@ -76,6 +76,27 @@ function computeStartSlots(
   return result.sort((a, b) => a.startTime.localeCompare(b.startTime));
 }
 
+// ── Sub-label helper ────────────────────────────────────────────
+function SubLabel({ children }: { children: React.ReactNode }) {
+  return (
+    <div
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: 8,
+        font: "600 10px/1 'JetBrains Mono', monospace",
+        letterSpacing: '.12em',
+        textTransform: 'uppercase',
+        color: '#0A0E0B',
+        marginBottom: 12,
+      }}
+    >
+      <span style={{ width: 14, height: 1.5, background: '#0FCB46', display: 'inline-block', flexShrink: 0 }} />
+      {children}
+    </div>
+  );
+}
+
 export default function TimeSlotPicker({
   court,
   date,
@@ -128,7 +149,6 @@ export default function TimeSlotPicker({
 
   function handleDurationChange(h: number) {
     setLocalDuration(h);
-    // Si el inicio seleccionado sigue siendo válido con la nueva duración, recalcular endTime
     if (selectedStart) {
       const newEnd = fromMinutes(toMinutes(selectedStart) + h * 60);
       const stillValid = computeStartSlots(ranges, taken, h, date).some(
@@ -144,34 +164,62 @@ export default function TimeSlotPicker({
     }
   }
 
+  /* ── Loading ── */
   if (loading) {
     return (
-      <div className="text-center py-6">
-        <div className="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-green-600" />
-        <p className="text-sm text-gray-400 mt-2">Cargando disponibilidad...</p>
+      <div style={{ textAlign: 'center', padding: '24px 0' }}>
+        <div
+          style={{
+            display: 'inline-block',
+            width: 24, height: 24,
+            border: '2.5px solid rgba(10,14,11,.1)',
+            borderTopColor: '#0FCB46',
+            borderRadius: '50%',
+            animation: 'spin 0.7s linear infinite',
+          }}
+        />
+        <p style={{ font: "500 12px/1 'Inter', sans-serif", color: 'rgba(10,14,11,.5)', marginTop: 10 }}>
+          Cargando disponibilidad...
+        </p>
+        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
       </div>
     );
   }
 
+  /* ── Fetch error ── */
   if (fetchError) {
     return (
-      <p className="text-center text-red-400 py-4 text-sm">
+      <div style={{
+        padding: '12px 16px',
+        background: 'rgba(255,50,50,.06)',
+        borderLeft: '3px solid #ff4040',
+        font: "500 13px/1.4 'Inter', sans-serif",
+        color: '#0A0E0B',
+      }}>
         No se pudo cargar la disponibilidad. Verifica tu conexión e intenta de nuevo.
-      </p>
+      </div>
     );
   }
 
+  /* ── No slots configured ── */
   if (ranges.length === 0) {
     return (
-      <p className="text-center text-gray-400 py-4">
+      <div style={{ padding: '14px 0', font: "400 13px/1 'Inter', sans-serif", color: 'rgba(10,14,11,.5)' }}>
         No hay turnos configurados para esta cancha.
-      </p>
+      </div>
     );
   }
 
+  /* ── Limit reached ── */
   if (maxDuration <= 0) {
     return (
-      <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 text-sm text-yellow-800">
+      <div style={{
+        padding: '12px 16px',
+        background: 'rgba(255,226,73,.15)',
+        borderLeft: '3px solid #FFE249',
+        font: "500 13px/1.4 'Inter', sans-serif",
+        color: '#0A0E0B',
+      }}>
         Ya alcanzaste el límite de 3 horas de reserva para este día.
       </div>
     );
@@ -180,29 +228,44 @@ export default function TimeSlotPicker({
   const anyAvailable = slots.some((s) => s.available);
 
   return (
-    <div className="space-y-4 sm:space-y-5">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+
       {/* Duration selector */}
       <div>
-        <p className="text-sm font-medium text-gray-700 mb-2">Duración</p>
-        <div className="flex gap-2">
-          {([1, 2, 3] as const).map((h) => (
-            <button
-              key={h}
-              type="button"
-              disabled={h > maxDuration}
-              onClick={() => handleDurationChange(h)}
-              className={`flex-1 py-2.5 sm:py-3 rounded-xl text-sm font-semibold transition-colors disabled:opacity-40 disabled:cursor-not-allowed ${
-                localDuration === h
-                  ? 'bg-green-600 text-white shadow-sm'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200 active:bg-gray-300'
-              }`}
-            >
-              {h}h
-            </button>
-          ))}
+        <SubLabel>Duración</SubLabel>
+        <div style={{ display: 'flex', gap: 8 }}>
+          {([1, 2, 3] as const).map((h) => {
+            const isActive = localDuration === h;
+            const isDisabled = h > maxDuration;
+            return (
+              <button
+                key={h}
+                type="button"
+                disabled={isDisabled}
+                onClick={() => handleDurationChange(h)}
+                style={{
+                  flex: 1,
+                  padding: '12px 8px',
+                  background: isActive ? '#0A0E0B' : '#FFFFFF',
+                  color: isActive ? '#F4F5F0' : '#0A0E0B',
+                  border: `1.5px solid ${isActive ? '#0A0E0B' : '#0A0E0B'}`,
+                  font: "700 14px/1 'Inter', sans-serif",
+                  cursor: isDisabled ? 'not-allowed' : 'pointer',
+                  opacity: isDisabled ? 0.35 : 1,
+                  transition: 'all .12s ease',
+                }}
+              >
+                {h}h
+              </button>
+            );
+          })}
         </div>
         {userHoursUsed > 0 && (
-          <p className="text-[11px] sm:text-xs text-yellow-600 mt-1.5">
+          <p style={{
+            font: "500 11px/1.4 'Inter', sans-serif",
+            color: 'rgba(10,14,11,.5)',
+            marginTop: 8,
+          }}>
             Tienes {userHoursUsed}h reservadas para este día · Máx. restante: {maxDuration}h
           </p>
         )}
@@ -210,21 +273,31 @@ export default function TimeSlotPicker({
 
       {/* Slot grid */}
       <div>
-        <p className="text-sm font-medium text-gray-700 mb-2">
-          Horario de inicio <span className="text-red-500">*</span>
-        </p>
+        <SubLabel>Horario de inicio</SubLabel>
         {slots.length === 0 ? (
-          <p className="text-sm text-gray-400 py-3 text-center">
+          <p style={{ font: "400 13px/1 'Inter', sans-serif", color: 'rgba(10,14,11,.5)', padding: '8px 0' }}>
             No hay inicios posibles con una duración de {localDuration}h.
           </p>
         ) : !anyAvailable ? (
-          <p className="text-sm text-gray-400 py-3 text-center">
+          <p style={{ font: "400 13px/1 'Inter', sans-serif", color: 'rgba(10,14,11,.5)', padding: '8px 0' }}>
             Todos los horarios están ocupados o fuera de rango.
           </p>
         ) : (
-          <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8 }}>
             {slots.map((slot) => {
-              const isSelected = selectedStart === slot.startTime;
+              const isSel = selectedStart === slot.startTime;
+              const isAvail = slot.available;
+
+              const bg = slot.available
+                ? isSel ? '#0FCB46' : '#FFFFFF'
+                : 'rgba(10,14,11,.06)';
+              const border = isAvail
+                ? isSel ? '1.5px solid #0A0E0B' : '1.5px solid #0A0E0B'
+                : '1px solid rgba(10,14,11,.12)';
+              const color = isAvail ? '#0A0E0B' : 'rgba(10,14,11,.35)';
+              const shadow = isSel ? '3px 3px 0 #0A0E0B' : 'none';
+              const tf = isSel ? 'translate(-1px, -1px)' : 'none';
+
               return (
                 <button
                   key={slot.startTime}
@@ -238,13 +311,29 @@ export default function TimeSlotPicker({
                       ? 'Horario pasado'
                       : `${slot.startTime}–${slot.endTime}`
                   }
-                  className={`py-2.5 sm:py-3 rounded-xl text-sm font-medium transition-colors leading-tight ${
-                    isSelected
-                      ? 'bg-green-600 text-white shadow-sm'
-                      : slot.available
-                      ? 'bg-green-50 text-green-700 hover:bg-green-100 active:bg-green-200'
-                      : 'bg-gray-100 text-gray-400 cursor-not-allowed line-through'
-                  }`}
+                  style={{
+                    padding: '12px 6px',
+                    background: bg,
+                    border,
+                    color,
+                    font: "700 14px/1 'Inter', sans-serif",
+                    fontVariantNumeric: 'tabular-nums',
+                    textDecoration: !isAvail ? 'line-through' : 'none',
+                    cursor: !isAvail ? 'not-allowed' : 'pointer',
+                    boxShadow: shadow,
+                    transform: tf,
+                    transition: 'all .12s ease',
+                  }}
+                  onMouseEnter={(e) => {
+                    if (isAvail && !isSel) {
+                      (e.currentTarget as HTMLButtonElement).style.background = 'rgba(15,203,70,.12)';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (isAvail && !isSel) {
+                      (e.currentTarget as HTMLButtonElement).style.background = '#FFFFFF';
+                    }
+                  }}
                 >
                   {slot.startTime}
                 </button>
@@ -252,10 +341,15 @@ export default function TimeSlotPicker({
             })}
           </div>
         )}
-        <p className="text-[11px] sm:text-xs text-gray-400 mt-2">
+        <p style={{
+          font: "500 11px/1 'Inter', sans-serif",
+          color: 'rgba(10,14,11,.45)',
+          marginTop: 8,
+        }}>
           Tachados: ocupados o fuera del horario de la cancha.
         </p>
       </div>
+
     </div>
   );
 }

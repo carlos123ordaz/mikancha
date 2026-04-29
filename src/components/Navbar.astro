@@ -4,20 +4,47 @@ import AuthWidget from './AuthWidget';
 const API_URL = import.meta.env.PUBLIC_API_URL;
 ---
 
-<nav class="bg-white shadow-sm sticky top-0 z-50">
-  <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2">
-    <a href="/" class="flex items-center shrink-0">
-      <img src="/logo.png" alt="MiCancha" class="h-12 w-16 sm:h-20 sm:w-28 object-contain" />
+<nav class="bg-mk-dark sticky top-0 z-50" style="border-bottom: 1px solid rgba(244,245,240,0.08)">
+  <div class="max-w-7xl mx-auto px-4 sm:px-8 lg:px-12 h-16 flex items-center justify-between gap-4">
+
+    <!-- Logo -->
+    <a href="/" class="flex items-center gap-3 shrink-0">
+      <div
+        class="w-9 h-9 bg-mk-green flex items-center justify-center font-heading font-black text-lg text-mk-dark border-2 border-mk-cream"
+        style="transform: rotate(-3deg); line-height: 1"
+      >
+        M
+      </div>
+      <span class="font-heading font-black text-xl text-mk-cream tracking-tight" style="letter-spacing: -.02em">
+        MIKANCHA<span class="text-mk-green">.</span>
+      </span>
     </a>
 
-    <div class="flex items-center gap-3 sm:gap-6 min-w-0">
+    <!-- Nav links -->
+    <div class="flex items-center gap-5 sm:gap-8">
       <a
         href="/canchas"
-        class="text-sm sm:text-base text-gray-600 hover:text-primary-600 font-medium transition-colors whitespace-nowrap"
+        class="hidden sm:block text-mk-cream/70 hover:text-mk-cream transition-colors"
+        style="font: 500 13px/1 'Inter', sans-serif"
       >
-        Ver Canchas
+        Canchas
+      </a>
+      <a
+        href="/#como-funciona"
+        class="hidden md:block text-mk-cream/70 hover:text-mk-cream transition-colors"
+        style="font: 500 13px/1 'Inter', sans-serif"
+      >
+        Cómo funciona
+      </a>
+      <a
+        href="/publica-tu-cancha"
+        class="hidden lg:block text-mk-cream/70 hover:text-mk-cream transition-colors"
+        style="font: 500 13px/1 'Inter', sans-serif"
+      >
+        Para dueños
       </a>
       <AuthWidget apiUrl={API_URL} client:load />
     </div>
+
   </div>
 </nav>

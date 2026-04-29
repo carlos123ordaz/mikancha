@@ -14,10 +14,16 @@ export default {
           800: '#166534',
           900: '#14532d',
         },
+        mk: {
+          green:  '#0FCB46',
+          dark:   '#0A0E0B',
+          cream:  '#F4F5F0',
+          yellow: '#FFE249',
+        },
       },
       fontFamily: {
         sans:    ['Inter', 'system-ui', 'sans-serif'],
-        heading: ['Montserrat', 'system-ui', 'sans-serif'],
+        heading: ['Archivo', 'system-ui', 'sans-serif'],
       },
     },
   },

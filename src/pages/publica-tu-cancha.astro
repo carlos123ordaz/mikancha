@@ -4,110 +4,235 @@ import Layout from '../layouts/Layout.astro';
 const API_URL = import.meta.env.PUBLIC_API_URL;
 ---
 
-<Layout title="Publica tu cancha" description="¿Tienes una cancha? Publícala en MiCancha y empieza a recibir reservas hoy mismo.">
+<Layout title="Publica tu cancha" description="¿Tienes una cancha? Publícala en MiKancha y empieza a recibir reservas hoy mismo.">
 
-  <!-- HERO -->
-  <section class="relative overflow-hidden bg-gray-950">
-    <div class="absolute inset-0">
-      <img
-        src="/img1.webp"
-        alt="Cancha deportiva"
-        class="w-full h-full object-cover"
-        fetchpriority="high"
-      />
-      <div class="absolute inset-0 bg-gradient-to-b from-gray-950/75 via-gray-950/55 to-gray-950/90"></div>
-    </div>
-    <div class="absolute -top-24 -left-24 w-96 h-96 bg-primary-500/20 rounded-full blur-3xl pointer-events-none"></div>
-    <div class="absolute -bottom-24 -right-24 w-96 h-96 bg-emerald-300/10 rounded-full blur-3xl pointer-events-none"></div>
+  <!-- ── HEADER ───────────────────────────────────────────────── -->
+  <section
+    class="relative bg-mk-dark text-mk-cream overflow-hidden"
+    style="padding: 48px 48px 52px; border-bottom: 4px solid #0FCB46"
+  >
+    <div class="absolute inset-0 pointer-events-none" style="background-image: linear-gradient(0deg, rgba(15,203,70,.06) 1px, transparent 1px); background-size: 100% 80px"></div>
 
-    <div class="relative z-10 max-w-3xl mx-auto px-4 py-16 sm:py-20 lg:py-24 text-center">
-      <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-full px-4 py-1.5 mb-6">
-        <span class="w-2 h-2 rounded-full bg-primary-400 animate-pulse"></span>
-        <span class="text-white/90 text-xs sm:text-sm font-medium tracking-wide">Para propietarios</span>
+    <div class="relative max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] gap-12 items-center">
+
+      <!-- Left: copy -->
+      <div class="header-content flex flex-col gap-4">
+        <span class="inline-flex items-center gap-2" style="font: 600 11px/1 'JetBrains Mono', monospace; letter-spacing: .15em; text-transform: uppercase; color: #0FCB46">
+          <span style="width: 16px; height: 1.5px; background: #0FCB46; display: inline-block"></span>
+          Para propietarios de canchas
+        </span>
+        <h1 style="margin: 0; font: 900 clamp(40px, 6vw, 72px)/0.9 'Archivo', system-ui; letter-spacing: -.03em">
+          Publica tu cancha.<br />
+          <span style="color: #0FCB46">Llena tu agenda.</span>
+        </h1>
+        <p style="margin: 0; max-width: 440px; font: 400 16px/1.55 'Inter', sans-serif; color: rgba(244,245,240,.7)">
+          Déjanos tus datos y te contactamos en menos de 24 horas para publicar tu cancha y empezar a recibir reservas online.
+        </p>
       </div>
-      <h1 class="font-heading text-3xl sm:text-4xl lg:text-5xl font-black text-white leading-tight mb-4">
-        Publica tu cancha<br/>
-        <span class="text-primary-400">y llena tu agenda</span>
-      </h1>
-      <p class="text-gray-300 text-base sm:text-lg max-w-xl mx-auto">
-        Únete a MiCancha y empieza a recibir reservas online. Déjanos tus datos y te contactamos en menos de 24 horas.
-      </p>
+
+      <!-- Right: stats panel -->
+      <div style="background: #111512; border: 1.5px solid rgba(244,245,240,.12); padding: 24px; display: flex; flex-direction: column; gap: 0" class="hidden lg:block">
+        <div style="padding-bottom: 12px; border-bottom: 1px solid rgba(244,245,240,.1); margin-bottom: 14px">
+          <span style="font: 600 10px/1 'JetBrains Mono', monospace; letter-spacing: .15em; text-transform: uppercase; color: rgba(244,245,240,.5)">● ¿Por qué publicar en MiKancha?</span>
+        </div>
+        {[
+          { num: '0%',    label: 'De comisión el primer mes' },
+          { num: '+500',  label: 'Reservas procesadas', accent: true },
+          { num: '24h',   label: 'Tiempo de activación', accent: true },
+          { num: '100%',  label: 'Pagos garantizados' },
+        ].map(({ num, label, accent }) => (
+          <div style={`padding: 10px 14px; border-left: 2px solid ${accent ? '#FFE249' : '#0FCB46'}; margin-bottom: 4px`}>
+            <div style="font: 500 9.5px/1 'JetBrains Mono', monospace; letter-spacing: .1em; text-transform: uppercase; color: rgba(244,245,240,.5); margin-bottom: 4px">{label}</div>
+            <div style="font: 800 22px/1 'Archivo', system-ui; color: #F4F5F0; font-variant-numeric: tabular-nums">{num}</div>
+          </div>
+        ))}
+      </div>
     </div>
   </section>
 
-  <!-- FORM -->
-  <section class="max-w-2xl mx-auto px-4 py-12 sm:py-16">
-
-    <div id="form-success" class="hidden bg-primary-50 border border-primary-200 rounded-2xl p-8 text-center">
-      <div class="text-4xl mb-3">🎉</div>
-      <h2 class="font-heading text-xl font-bold text-gray-900 mb-2">¡Mensaje enviado!</h2>
-      <p class="text-gray-600 text-sm">Gracias por tu interés. Te contactaremos pronto.</p>
+  <!-- ── BENEFITS STRIP ──────────────────────────────────────── -->
+  <section
+    class="bg-mk-green text-mk-dark"
+    style="padding: 22px 48px; border-bottom: 3px solid #0A0E0B"
+  >
+    <div class="max-w-7xl mx-auto flex flex-wrap justify-around items-center gap-4">
+      {[
+        { icon: '▮', label: 'Sin comisión el primer mes' },
+        { icon: '▮', label: 'Pagos directos a tu cuenta' },
+        { icon: '▮', label: 'Panel de control en tiempo real' },
+        { icon: '▮', label: 'Soporte por WhatsApp' },
+      ].map(({ icon, label }) => (
+        <div class="flex items-center gap-2">
+          <span style="font: 700 10px/1 'JetBrains Mono', monospace; color: rgba(10,14,11,.5)">{icon}</span>
+          <span style="font: 600 12px/1 'JetBrains Mono', monospace; letter-spacing: .06em; text-transform: uppercase">{label}</span>
+        </div>
+      ))}
     </div>
-
-    <form
-      id="contact-form"
-      class="bg-white border border-gray-100 rounded-2xl shadow-sm p-6 sm:p-8 space-y-5"
-    >
-      <div>
-        <label for="name" class="block text-sm font-semibold text-gray-700 mb-1.5">Nombre completo</label>
-        <input
-          id="name"
-          name="name"
-          type="text"
-          required
-          placeholder="Ej. Juan Pérez"
-          class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-transparent transition"
-        />
-      </div>
-
-      <div>
-        <label for="email" class="block text-sm font-semibold text-gray-700 mb-1.5">Correo electrónico</label>
-        <input
-          id="email"
-          name="email"
-          type="email"
-          required
-          placeholder="tu@correo.com"
-          class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-transparent transition"
-        />
-      </div>
-
-      <div>
-        <label for="phone" class="block text-sm font-semibold text-gray-700 mb-1.5">Teléfono / WhatsApp</label>
-        <input
-          id="phone"
-          name="phone"
-          type="tel"
-          required
-          placeholder="Ej. 987 654 321"
-          class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-transparent transition"
-        />
-      </div>
-
-      <div>
-        <label for="message" class="block text-sm font-semibold text-gray-700 mb-1.5">Cuéntanos sobre tu cancha</label>
-        <textarea
-          id="message"
-          name="message"
-          required
-          rows="4"
-          placeholder="Tipo de cancha, ubicación, disponibilidad horaria, etc."
-          class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-transparent transition resize-none"
-        ></textarea>
-      </div>
-
-      <div id="form-error" class="hidden text-sm text-red-600 bg-red-50 border border-red-200 rounded-xl px-4 py-3"></div>
-
-      <button
-        type="submit"
-        id="submit-btn"
-        class="w-full bg-primary-500 hover:bg-primary-400 text-white font-bold py-3.5 rounded-xl transition-all duration-200 hover:scale-[1.02] hover:shadow-lg hover:shadow-primary-500/30 text-sm"
-      >
-        Enviar solicitud
-      </button>
-    </form>
   </section>
+
+  <!-- ── FORM ────────────────────────────────────────────────── -->
+  <section class="bg-mk-cream" style="padding: 64px 48px 80px">
+    <div style="max-width: 600px; margin: 0 auto">
+
+      <!-- Success state (hidden by default) -->
+      <div id="form-success" class="hidden" style="background: #0A0E0B; border: 2px solid #0FCB46; padding: 40px 32px; text-align: center">
+        <div style="font: 600 10px/1 'JetBrains Mono', monospace; letter-spacing: .15em; text-transform: uppercase; color: #0FCB46; margin-bottom: 16px">
+          ● Mensaje enviado
+        </div>
+        <h2 style="margin: 0 0 12px; font: 900 32px/1 'Archivo', system-ui; color: #F4F5F0; letter-spacing: -.02em">
+          ¡Listo!
+        </h2>
+        <p style="font: 400 15px/1.5 'Inter', sans-serif; color: rgba(244,245,240,.7); margin: 0">
+          Gracias por tu interés. Te contactaremos en menos de 24 horas.
+        </p>
+      </div>
+
+      <!-- Form -->
+      <form id="contact-form" style="display: flex; flex-direction: column; gap: 0; border: 2px solid #0A0E0B; background: #FFFFFF">
+
+        <!-- Form header -->
+        <div style="padding: 14px 24px; background: #0A0E0B; border-bottom: 2px solid #0FCB46">
+          <span style="font: 600 10px/1 'JetBrains Mono', monospace; letter-spacing: .15em; text-transform: uppercase; color: #0FCB46">
+            ▮ Solicitud de publicación
+          </span>
+        </div>
+
+        <div style="padding: 28px 24px; display: flex; flex-direction: column; gap: 20px">
+
+          <div>
+            <label for="name" class="mk-label">Nombre completo</label>
+            <input
+              id="name" name="name" type="text" required
+              placeholder="Ej. Juan Pérez"
+              class="mk-input"
+            />
+          </div>
+
+          <div>
+            <label for="email" class="mk-label">Correo electrónico</label>
+            <input
+              id="email" name="email" type="email" required
+              placeholder="tu@correo.com"
+              class="mk-input"
+            />
+          </div>
+
+          <div>
+            <label for="phone" class="mk-label">Teléfono / WhatsApp</label>
+            <input
+              id="phone" name="phone" type="tel" required
+              placeholder="Ej. 987 654 321"
+              class="mk-input"
+            />
+          </div>
+
+          <div>
+            <label for="message" class="mk-label">Cuéntanos sobre tu cancha</label>
+            <textarea
+              id="message" name="message" required rows="4"
+              placeholder="Tipo de cancha, ubicación, disponibilidad horaria, precio..."
+              class="mk-input"
+              style="resize: vertical; min-height: 100px"
+            ></textarea>
+          </div>
+
+          <!-- Error -->
+          <div
+            id="form-error"
+            class="hidden"
+            style="padding: 12px 16px; background: rgba(255,50,50,.06); border-left: 3px solid #ff4040; font: 500 13px/1.4 'Inter', sans-serif; color: #0A0E0B"
+          ></div>
+
+          <!-- Submit -->
+          <button
+            type="submit"
+            id="submit-btn"
+            class="mk-submit"
+          >
+            Enviar solicitud →
+          </button>
+
+        </div>
+      </form>
+
+    </div>
+  </section>
+
 </Layout>
+
+<style>
+  .header-content {
+    animation: fadeUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .mk-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font: 600 10px/1 'JetBrains Mono', monospace;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: #0A0E0B;
+    margin-bottom: 8px;
+  }
+  .mk-label::before {
+    content: '';
+    display: inline-block;
+    width: 14px;
+    height: 1.5px;
+    background: #0FCB46;
+    flex-shrink: 0;
+  }
+
+  .mk-input {
+    display: block;
+    width: 100%;
+    border: 1.5px solid #0A0E0B;
+    background: transparent;
+    padding: 12px 14px;
+    font: 500 14px/1.4 'Inter', sans-serif;
+    color: #0A0E0B;
+    outline: none;
+    transition: border-color .15s ease, box-shadow .15s ease;
+    box-sizing: border-box;
+    appearance: none;
+    -webkit-appearance: none;
+    border-radius: 0;
+  }
+  .mk-input::placeholder { color: rgba(10,14,11,.35); }
+  .mk-input:focus {
+    border-color: #0FCB46;
+    box-shadow: 3px 3px 0 rgba(15,203,70,.2);
+  }
+
+  .mk-submit {
+    width: 100%;
+    padding: 16px 24px;
+    background: #0FCB46;
+    color: #0A0E0B;
+    border: 2px solid #0A0E0B;
+    font: 800 14px/1 'Archivo', system-ui;
+    letter-spacing: .02em;
+    text-transform: uppercase;
+    box-shadow: 4px 4px 0 #0A0E0B;
+    cursor: pointer;
+    transition: transform .1s ease, box-shadow .1s ease;
+  }
+  .mk-submit:hover { opacity: .92; }
+  .mk-submit:active,
+  .mk-submit:disabled {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0 #0A0E0B;
+  }
+  .mk-submit:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+</style>
 
 <script define:vars={{ API_URL }}>
   const form = document.getElementById('contact-form');
@@ -147,7 +272,7 @@ const API_URL = import.meta.env.PUBLIC_API_URL;
       errorBox.textContent = err.message || 'Ocurrió un error. Intenta de nuevo.';
       errorBox.classList.remove('hidden');
       submitBtn.disabled = false;
-      submitBtn.textContent = 'Enviar solicitud';
+      submitBtn.textContent = 'Enviar solicitud →';
     }
   });
 </script>

@@ -20,301 +20,260 @@ const minPrice = courts.length ? Math.min(...courts.map((c) => c.pricePerHour)) 
 
 <Layout title="Canchas disponibles" description="Encuentra y reserva tu cancha deportiva favorita">
 
-  <!-- ── HERO ─────────────────────────────────────────────── -->
-  <section class="relative overflow-hidden bg-gray-950">
-    <div class="absolute inset-0">
-      <img
-        src="/img1.webp"
-        alt="Cancha deportiva"
-        class="w-full h-full object-cover"
-        fetchpriority="high"
-      />
-      <div class="absolute inset-0 bg-gradient-to-b from-gray-950/75 via-gray-950/55 to-gray-950/90"></div>
-    </div>
+  <!-- ── HEADER ─────────────────────────────────────────────── -->
+  <section
+    class="relative bg-mk-dark text-mk-cream overflow-hidden"
+    style="padding: 48px 48px 52px; border-bottom: 4px solid #0FCB46"
+  >
+    <!-- Field lines -->
+    <div
+      class="absolute inset-0 pointer-events-none"
+      style="background-image: linear-gradient(0deg, rgba(15,203,70,.06) 1px, transparent 1px); background-size: 100% 80px"
+    ></div>
 
-    <!-- Decorative blobs -->
-    <div class="absolute -top-24 -left-24 w-96 h-96 bg-primary-500/20 rounded-full blur-3xl pointer-events-none"></div>
-    <div class="absolute -bottom-24 -right-24 w-96 h-96 bg-emerald-300/10 rounded-full blur-3xl pointer-events-none"></div>
-
-    <div class="relative z-10 max-w-5xl mx-auto px-4 py-20 sm:py-24 lg:py-28 text-center">
-      <div class="hero-badge inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-full px-4 py-1.5 mb-6">
-        <span class="w-2 h-2 rounded-full bg-primary-400 animate-pulse"></span>
-        <span class="text-white/90 text-xs sm:text-sm font-medium tracking-wide">
-          {courts.length} {courts.length === 1 ? 'cancha disponible' : 'canchas disponibles'}
+    <div class="relative max-w-7xl mx-auto">
+      <div class="header-content flex flex-col gap-3 max-w-2xl">
+        <span
+          class="inline-flex items-center gap-2"
+          style="font: 600 11px/1 'JetBrains Mono', monospace; letter-spacing: .15em; text-transform: uppercase; color: #0FCB46"
+        >
+          <span class="inline-block w-4" style="height: 1.5px; background: #0FCB46"></span>
+          01 · Encuentra tu cancha
         </span>
-      </div>
-
-      <h1 class="hero-title font-heading text-4xl sm:text-6xl lg:text-7xl font-black text-white leading-[1.05] mb-5">
-        Canchas
-        <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-emerald-300">
-          disponibles
-        </span>
-      </h1>
-
-      <p class="hero-sub text-base sm:text-xl text-white/75 max-w-2xl mx-auto mb-8 font-light">
-        {minPrice > 0
-          ? `Desde S/ ${minPrice} la hora. Elige, reserva y juega.`
-          : 'Selecciona una cancha, elige tu horario y reserva en minutos.'}
-      </p>
-
-      <div class="hero-chips flex flex-wrap items-center justify-center gap-2 sm:gap-3">
-        <span class="inline-flex items-center gap-1.5 bg-white/10 backdrop-blur-md border border-white/15 rounded-full px-3 py-1.5 text-white/85 text-xs sm:text-sm">
-          <span>⚡</span> Reserva instantánea
-        </span>
-        <span class="inline-flex items-center gap-1.5 bg-white/10 backdrop-blur-md border border-white/15 rounded-full px-3 py-1.5 text-white/85 text-xs sm:text-sm">
-          <span>💳</span> Yape / Transferencia
-        </span>
-        <span class="inline-flex items-center gap-1.5 bg-white/10 backdrop-blur-md border border-white/15 rounded-full px-3 py-1.5 text-white/85 text-xs sm:text-sm">
-          <span>📲</span> QR de acceso
-        </span>
+        <h1 style="margin: 0; font: 800 clamp(40px, 6vw, 72px)/0.92 'Archivo', system-ui; letter-spacing: -.03em">
+          Filtra. Elige. <span style="color: #0FCB46">Reserva.</span>
+        </h1>
+        <p style="margin: 0; font: 400 16px/1.5 'Inter', sans-serif; color: rgba(244,245,240,.7)">
+          {courts.length > 0
+            ? `${courts.length} canchas disponibles${minPrice > 0 ? ` · desde S/ ${minPrice}/h` : ''}`
+            : 'Reserva la cancha perfecta en Lima.'}
+        </p>
       </div>
     </div>
-
-    <!-- Wave divider -->
-    <svg class="absolute bottom-0 left-0 w-full h-10 sm:h-14 text-gray-50" viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true">
-      <path fill="currentColor" d="M0,32 C240,64 480,0 720,16 C960,32 1200,64 1440,32 L1440,60 L0,60 Z"/>
-    </svg>
   </section>
 
-  <!-- ── FILTER BAR ───────────────────────────────────────── -->
+  <!-- ── FILTER BAR ──────────────────────────────────────────── -->
   {courts.length > 0 && (
-    <section class="sticky top-16 z-30 bg-white/90 backdrop-blur-md border-b border-gray-100">
-      <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col md:flex-row gap-3 md:items-center">
-        <div class="relative flex-1">
-          <svg class="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 104.5 4.5a7.5 7.5 0 0012.15 12.15z"/>
-          </svg>
+    <section class="sticky top-16 z-30 bg-mk-dark" style="border-bottom: 2px solid #0FCB46">
+      <div class="max-w-7xl mx-auto px-4 sm:px-8 lg:px-12 py-3 flex flex-col md:flex-row gap-3 md:items-center">
+        <!-- Search input -->
+        <div
+          class="relative flex-1 flex items-center"
+          style="background: rgba(244,245,240,.07); border: 1.5px solid rgba(244,245,240,.18)"
+        >
+          <span class="pl-3 pr-2 text-mk-green" style="font: 600 10px/1 'JetBrains Mono', monospace; letter-spacing: .1em">▮</span>
           <input
             id="courtSearch"
             type="text"
-            placeholder="Buscar por nombre o ubicación..."
-            class="w-full pl-10 pr-4 py-2.5 text-sm rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:border-primary-400 focus:ring-2 focus:ring-primary-100 outline-none transition-colors"
+            placeholder="Nombre, zona o tipo de cancha..."
+            class="flex-1 h-10 pr-4 bg-transparent outline-none text-mk-cream placeholder-mk-cream/40"
+            style="font: 500 14px/1 'Inter', sans-serif"
           />
         </div>
+        <!-- Sort chips -->
         <div class="flex items-center gap-2 overflow-x-auto no-scrollbar">
-          <button data-sort="default" class="sort-chip sort-active shrink-0 text-xs sm:text-sm font-semibold px-3.5 py-2 rounded-full border transition-colors">
-            Todas
-          </button>
-          <button data-sort="price" class="sort-chip shrink-0 text-xs sm:text-sm font-semibold px-3.5 py-2 rounded-full border transition-colors">
-            Menor precio
-          </button>
-          <button data-sort="slots" class="sort-chip shrink-0 text-xs sm:text-sm font-semibold px-3.5 py-2 rounded-full border transition-colors">
-            Más turnos
-          </button>
+          <span
+            class="shrink-0"
+            style="font: 600 10px/1 'JetBrains Mono', monospace; letter-spacing: .12em; text-transform: uppercase; color: rgba(244,245,240,.4); white-space: nowrap"
+          >
+            Orden:
+          </span>
+          <button data-sort="default" class="sort-chip sort-active shrink-0">Todas</button>
+          <button data-sort="price"   class="sort-chip shrink-0">Menor precio</button>
+          <button data-sort="slots"   class="sort-chip shrink-0">Más turnos</button>
         </div>
       </div>
     </section>
   )}
 
-  <!-- ── GRID ─────────────────────────────────────────────── -->
-  <section class="max-w-7xl mx-auto px-4 py-10 sm:py-14">
-    {error && (
-      <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl mb-8 flex items-center gap-2">
-        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-        </svg>
-        {error}
-      </div>
-    )}
+  <!-- ── GRID ───────────────────────────────────────────────── -->
+  <section class="bg-mk-cream" style="padding: 48px 48px 80px">
+    <div class="max-w-7xl mx-auto">
 
-    {courts.length === 0 && !error && (
-      <div class="text-center py-20">
-        <div class="inline-flex items-center justify-center w-24 h-24 rounded-full bg-gradient-to-br from-primary-50 to-emerald-100 mb-6 text-5xl">
-          ⚽
-        </div>
-        <h2 class="font-heading text-2xl font-black text-gray-800 mb-2">Aún no hay canchas disponibles</h2>
-        <p class="text-gray-500 max-w-md mx-auto">Estamos preparando nuevas canchas. Vuelve pronto y encuentra la perfecta para ti.</p>
-        <a href="/" class="inline-flex items-center gap-2 mt-6 text-primary-600 font-semibold hover:text-primary-500 transition-colors">
-          ← Volver al inicio
-        </a>
-      </div>
-    )}
-
-    {courts.length > 0 && (
-      <div class="flex items-center justify-between mb-6">
-        <h2 class="font-heading text-xl sm:text-2xl font-black text-gray-900">Todas las canchas</h2>
-        <span id="resultCount" class="text-sm text-gray-500 font-medium">
-          {courts.length} {courts.length === 1 ? 'resultado' : 'resultados'}
-        </span>
-      </div>
-    )}
-
-    <div id="emptySearch" class="hidden text-center py-16">
-      <div class="text-5xl mb-3 opacity-50">🔎</div>
-      <p class="text-gray-500">No encontramos canchas que coincidan con tu búsqueda.</p>
-    </div>
-
-    <div id="courtsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      {courts.map((court, i) => (
-        <a
-          href={`/canchas/${court._id}`}
-          data-name={court.name.toLowerCase()}
-          data-location={court.location.toLowerCase()}
-          data-price={court.pricePerHour}
-          data-slots={court.availableSlots?.length ?? 0}
-          class="court-card reveal group block bg-white rounded-3xl shadow-sm hover:shadow-2xl hover:shadow-primary-500/10 transition-all duration-300 overflow-hidden border border-gray-100 hover:border-primary-200 hover:-translate-y-1.5"
-          style={`transition-delay:${Math.min(i, 8) * 60}ms`}
+      {error && (
+        <div
+          class="mb-8 p-4 flex items-center gap-3"
+          style="background: rgba(255,50,50,.08); border-left: 4px solid #ff4040; border-top: 1px solid rgba(255,80,80,.3); border-bottom: 1px solid rgba(255,80,80,.3); border-right: 1px solid rgba(255,80,80,.3)"
         >
-          <!-- Imagen con overlay -->
-          <div class="relative h-56 overflow-hidden bg-gradient-to-br from-primary-100 to-emerald-50">
+          <span style="font: 700 13px/1.4 'Inter', sans-serif; color: #0A0E0B">{error}</span>
+        </div>
+      )}
+
+      {courts.length === 0 && !error && (
+        <div class="text-center" style="padding: 80px 20px">
+          <div style="font: 900 40px/1 'Archivo', system-ui; color: #0A0E0B; margin-bottom: 12px">Sin canchas aún.</div>
+          <p style="font: 400 14px/1.5 'Inter', sans-serif; color: rgba(10,14,11,.6); max-width: 400px; margin: 0 auto 24px">
+            Estamos preparando nuevas canchas. Vuelve pronto.
+          </p>
+          <a
+            href="/"
+            style="display: inline-flex; align-items: center; gap: 8px; background: #0A0E0B; color: #F4F5F0; border: 2px solid #0A0E0B; padding: 12px 20px; font: 700 12px/1 'Inter', sans-serif; letter-spacing: .02em; text-transform: uppercase; box-shadow: 4px 4px 0 #0FCB46; text-decoration: none"
+          >
+            ← Volver al inicio
+          </a>
+        </div>
+      )}
+
+      {courts.length > 0 && (
+        <div class="flex items-center justify-between mb-8">
+          <span style="font: 600 11px/1 'JetBrains Mono', monospace; letter-spacing: .15em; text-transform: uppercase; color: rgba(10,14,11,.6)">
+            ▮ <span id="resultCount">{courts.length} {courts.length === 1 ? 'cancha' : 'canchas'}</span> disponibles
+          </span>
+          <span style="font: 500 12px/1 'Inter', sans-serif; color: rgba(10,14,11,.5)">
+            Ordenado por: <strong id="sortLabel" style="color: #0A0E0B">Todas</strong> ↓
+          </span>
+        </div>
+      )}
+
+      <div id="emptySearch" class="hidden text-center" style="padding: 60px 20px">
+        <div style="font: 800 28px/1 'Archivo', system-ui; color: #0A0E0B; margin-bottom: 8px">Sin resultados.</div>
+        <div style="font: 400 14px/1.5 'Inter', sans-serif; color: rgba(10,14,11,.55)">
+          Prueba quitar filtros o cambia de búsqueda.
+        </div>
+      </div>
+
+      <div id="courtsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {courts.map((court) => (
+          <a
+            href={`/canchas/${court._id}`}
+            data-name={court.name.toLowerCase()}
+            data-location={court.location.toLowerCase()}
+            data-price={court.pricePerHour}
+            data-slots={court.availableSlots?.length ?? 0}
+            class="court-card bg-white flex flex-col transition-all duration-150"
+            style="border: 2px solid #0A0E0B; text-decoration: none"
+            onmouseenter="this.style.transform='translate(-2px,-2px)';this.style.boxShadow='6px 6px 0 #0FCB46'"
+            onmouseleave="this.style.transform='';this.style.boxShadow=''"
+          >
+            <!-- Image -->
             {court.images?.[0] ? (
-              <img
-                src={court.images[0]}
-                alt={court.name}
-                class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                loading="lazy"
-              />
+              <div class="relative overflow-hidden" style="height: 180px">
+                <img
+                  src={court.images[0]}
+                  alt={court.name}
+                  class="w-full h-full object-cover"
+                  loading="lazy"
+                />
+                {(court.images?.length ?? 0) > 1 && (
+                  <div
+                    class="absolute top-2 right-2"
+                    style="background: rgba(10,14,11,.75); color: #F4F5F0; padding: 4px 8px; font: 600 10px/1 'JetBrains Mono', monospace; letter-spacing: .08em"
+                  >
+                    {court.images.length} FOTOS
+                  </div>
+                )}
+              </div>
             ) : (
-              <div class="w-full h-full flex items-center justify-center">
-                <span class="text-7xl opacity-25">⚽</span>
+              <div class="relative overflow-hidden flex items-end" style="height: 180px; background: #0A0E0B">
+                <div class="absolute inset-0" style="background: repeating-linear-gradient(135deg, #0A2A14 0 14px, #0D341A 14px 28px)"></div>
+                <div class="absolute" style="top: 50%; left: 8%; right: 8%; height: 2px; background: rgba(255,255,255,.18); transform: translateY(-50%)"></div>
+                <div class="absolute" style="top: 50%; left: 50%; width: 56px; height: 56px; border: 2px solid rgba(255,255,255,.2); border-radius: 50%; transform: translate(-50%, -50%)"></div>
+                <span class="relative z-10 p-3" style="font: 600 9.5px/1 'JetBrains Mono', monospace; letter-spacing: .08em; text-transform: uppercase; color: #0FCB46">▮ LIBRE</span>
               </div>
             )}
 
-            <!-- Gradient overlay -->
-            <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent"></div>
-
-            <!-- Price chip -->
-            <div class="absolute top-3 right-3 bg-white/95 backdrop-blur-sm px-3 py-1.5 rounded-full shadow-lg flex items-baseline gap-0.5">
-              <span class="font-heading font-black text-primary-600 text-base leading-none">S/ {court.pricePerHour}</span>
-              <span class="text-gray-400 text-[11px] leading-none">/h</span>
-            </div>
-
-            <!-- Photos badge -->
-            {(court.images?.length ?? 0) > 1 && (
-              <div class="absolute top-3 left-3 inline-flex items-center gap-1 text-[11px] font-medium text-white bg-black/50 backdrop-blur-sm px-2 py-1 rounded-full">
-                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.66-.9l.82-1.2A2 2 0 0110.07 4h3.86a2 2 0 011.66.9l.82 1.2a2 2 0 001.66.9H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/>
-                </svg>
-                {court.images.length}
+            <!-- Content -->
+            <div class="flex flex-col gap-3 flex-1" style="padding: 18px">
+              <div>
+                <div style="font: 600 10px/1 'JetBrains Mono', monospace; letter-spacing: .1em; text-transform: uppercase; color: rgba(10,14,11,.55); margin-bottom: 6px">
+                  ◉ {court.location}
+                </div>
+                <h3 style="margin: 0; font: 800 18px/1.15 'Archivo', system-ui; letter-spacing: -.01em; color: #0A0E0B">
+                  {court.name}
+                </h3>
               </div>
-            )}
 
-            <!-- Name + location on image -->
-            <div class="absolute bottom-3 left-4 right-4">
-              <h3 class="font-heading text-lg sm:text-xl font-black text-white leading-tight line-clamp-1 drop-shadow-md">
-                {court.name}
-              </h3>
-              <div class="mt-1 flex items-center gap-1.5 text-white/85 text-xs">
-                <svg class="w-3.5 h-3.5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                  <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/>
-                </svg>
-                <span class="truncate">{court.location}</span>
+              {(court.availableSlots?.length ?? 0) > 0 && (
+                <div class="flex flex-wrap gap-1.5">
+                  {(court.availableSlots ?? []).slice(0, 3).map((slot) => (
+                    <span style="display: inline-block; padding: 4px 9px; background: rgba(15,203,70,.1); border: 1px solid rgba(15,203,70,.35); font: 600 11px/1 'JetBrains Mono', monospace; color: #0A0E0B; letter-spacing: .04em">
+                      {slot.startTime}–{slot.endTime}
+                    </span>
+                  ))}
+                  {(court.availableSlots?.length ?? 0) > 3 && (
+                    <span style="font: 500 11px/1 'Inter', sans-serif; color: rgba(10,14,11,.5); padding: 4px 6px">
+                      +{(court.availableSlots?.length ?? 0) - 3} más
+                    </span>
+                  )}
+                </div>
+              )}
+
+              <div class="mt-auto flex items-center justify-between" style="padding-top: 14px; border-top: 1px dashed rgba(10,14,11,.2)">
+                <div>
+                  <div style="font: 600 9px/1 'JetBrains Mono', monospace; letter-spacing: .1em; text-transform: uppercase; color: rgba(10,14,11,.5); margin-bottom: 3px">
+                    desde
+                  </div>
+                  <div style="font: 900 24px/1 'Archivo', system-ui; font-variant-numeric: tabular-nums; color: #0A0E0B">
+                    S/{court.pricePerHour}
+                    <span style="font: 500 12px/1 'Inter', sans-serif; color: rgba(10,14,11,.55); margin-left: 4px">/h</span>
+                  </div>
+                </div>
+                <span style="font: 700 12px/1 'Inter', sans-serif; color: #0FCB46">Reservar →</span>
               </div>
             </div>
-          </div>
+          </a>
+        ))}
+      </div>
 
-          <!-- Contenido -->
-          <div class="p-5">
-            <!-- Slots -->
-            <div class="flex flex-wrap gap-1.5 mb-4 min-h-[28px]">
-              {(court.availableSlots ?? []).slice(0, 3).map((slot) => (
-                <span class="text-xs bg-primary-50 text-primary-700 px-2.5 py-1 rounded-full font-semibold border border-primary-100">
-                  {slot.startTime}–{slot.endTime}
-                </span>
-              ))}
-              {(court.availableSlots?.length ?? 0) > 3 && (
-                <span class="text-xs text-gray-500 px-2 py-1 font-medium">
-                  +{(court.availableSlots?.length ?? 0) - 3} más
-                </span>
-              )}
-              {(court.availableSlots?.length ?? 0) === 0 && (
-                <span class="text-xs text-gray-400 italic">Sin horarios configurados</span>
-              )}
-            </div>
-
-            <!-- CTA -->
-            <div class="flex items-center justify-between pt-3 border-t border-gray-100">
-              <span class="text-xs text-gray-500 font-medium inline-flex items-center gap-1.5">
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                </svg>
-                {court.availableSlots?.length ?? 0} {(court.availableSlots?.length ?? 0) === 1 ? 'turno' : 'turnos'}
-              </span>
-              <span class="text-xs sm:text-sm font-bold text-primary-600 group-hover:text-white group-hover:bg-primary-600 px-3 py-1.5 rounded-full border border-primary-200 group-hover:border-primary-600 transition-all duration-300 inline-flex items-center gap-1">
-                Reservar
-                <svg class="w-3.5 h-3.5 transform group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                </svg>
-              </span>
-            </div>
-          </div>
-        </a>
-      ))}
     </div>
   </section>
 
-  <!-- ── TRUST STRIP ─────────────────────────────────────── -->
-  {courts.length > 0 && (
-    <section class="bg-gradient-to-b from-gray-50 to-white border-t border-gray-100 py-14 sm:py-16">
-      <div class="max-w-5xl mx-auto px-4 grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8">
-        {[
-          { icon: '⚡', title: 'Reserva al instante', desc: 'Confirma tu horario en segundos, sin llamadas ni esperas.' },
-          { icon: '🔒', title: 'Pago seguro',         desc: 'Paga por Yape o transferencia y adjunta tu comprobante.' },
-          { icon: '📲', title: 'QR de acceso',        desc: 'Recibe tu código QR por correo al confirmar la reserva.' },
-        ].map(({ icon, title, desc }, i) => (
-          <div
-            class="reveal bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300"
-            style={`transition-delay:${i * 80}ms`}
-          >
-            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-primary-50 to-emerald-100 flex items-center justify-center text-2xl mb-4">
-              {icon}
-            </div>
-            <h3 class="font-heading text-lg font-black text-gray-900 mb-1">{title}</h3>
-            <p class="text-sm text-gray-500 leading-relaxed">{desc}</p>
-          </div>
-        ))}
-      </div>
-    </section>
-  )}
 </Layout>
 
 <style>
-  .hero-badge { animation: fadeDown 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.05s both; }
-  .hero-title { animation: fadeUp   0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.2s  both; }
-  .hero-sub   { animation: fadeUp   0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.35s both; }
-  .hero-chips { animation: fadeUp   0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.5s  both; }
-
-  @keyframes fadeUp   { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: translateY(0); } }
-  @keyframes fadeDown { from { opacity: 0; transform: translateY(-14px); } to { opacity: 1; transform: translateY(0); } }
-
-  .reveal {
-    opacity: 0;
-    transform: translateY(24px);
-    transition:
-      opacity   0.55s cubic-bezier(0.22, 1, 0.36, 1),
-      transform 0.55s cubic-bezier(0.22, 1, 0.36, 1),
-      box-shadow 0.3s ease,
-      border-color 0.3s ease;
+  .header-content {
+    animation: fadeUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both;
   }
-  .reveal.visible { opacity: 1; transform: translateY(0); }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
 
   .sort-chip {
-    border-color: rgb(229 231 235);
-    color: rgb(75 85 99);
-    background: white;
+    padding: 8px 14px;
+    background: transparent;
+    border: 1.5px solid rgba(244,245,240,.2);
+    color: rgba(244,245,240,.6);
+    font: 600 11px/1 'Inter', sans-serif;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all .15s ease;
+    white-space: nowrap;
   }
-  .sort-chip:hover { background: rgb(249 250 251); }
+  .sort-chip:hover {
+    border-color: rgba(244,245,240,.5);
+    color: #F4F5F0;
+  }
   .sort-active {
-    background: rgb(22 163 74);
-    color: white;
-    border-color: rgb(22 163 74);
+    background: #0FCB46 !important;
+    color: #0A0E0B !important;
+    border-color: #0FCB46 !important;
+    font-weight: 700;
   }
-  .sort-active:hover { background: rgb(22 163 74); }
 
   .no-scrollbar::-webkit-scrollbar { display: none; }
   .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+  ::placeholder { color: rgba(244,245,240,.35); }
 </style>
 
 <script>
   const searchInput = document.getElementById('courtSearch') as HTMLInputElement | null;
   const grid = document.getElementById('courtsGrid');
-  const resultCount = document.getElementById('resultCount');
+  const resultCountEl = document.getElementById('resultCount');
+  const sortLabelEl = document.getElementById('sortLabel');
   const emptySearch = document.getElementById('emptySearch');
   const cards = Array.from(document.querySelectorAll<HTMLElement>('.court-card'));
   const sortButtons = Array.from(document.querySelectorAll<HTMLElement>('[data-sort]'));
   const totalCards = cards.length;
   let activeSort = 'default';
+
+  const sortLabels: Record<string, string> = {
+    default: 'Todas',
+    price: 'Menor precio',
+    slots: 'Más turnos',
+  };
 
   function apply() {
     const q = (searchInput?.value ?? '').trim().toLowerCase();
@@ -331,16 +290,15 @@ const minPrice = courts.length ? Math.min(...courts.map((c) => c.pricePerHour)) 
     }
 
     visible.forEach((el) => grid?.appendChild(el));
-    cards.forEach((el) => {
-      el.style.display = visible.includes(el) ? '' : 'none';
-    });
+    cards.forEach((el) => { el.style.display = visible.includes(el) ? '' : 'none'; });
 
-    if (resultCount) {
-      resultCount.textContent =
+    if (resultCountEl) {
+      resultCountEl.textContent =
         visible.length === totalCards
-          ? `${totalCards} ${totalCards === 1 ? 'resultado' : 'resultados'}`
+          ? `${totalCards} ${totalCards === 1 ? 'cancha' : 'canchas'}`
           : `${visible.length} de ${totalCards} canchas`;
     }
+    if (sortLabelEl) sortLabelEl.textContent = sortLabels[activeSort] ?? 'Todas';
     emptySearch?.classList.toggle('hidden', visible.length > 0);
     grid?.classList.toggle('hidden', visible.length === 0);
   }
@@ -354,16 +312,4 @@ const minPrice = courts.length ? Math.min(...courts.map((c) => c.pricePerHour)) 
       apply();
     });
   });
-
-  const observer = new IntersectionObserver(
-    (entries) =>
-      entries.forEach((e) => {
-        if (e.isIntersecting) {
-          e.target.classList.add('visible');
-          observer.unobserve(e.target);
-        }
-      }),
-    { threshold: 0.1 }
-  );
-  document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
 </script>
