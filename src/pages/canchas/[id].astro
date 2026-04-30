@@ -293,7 +293,8 @@ const mapsLink = `https://www.google.com/maps/search/?api=1&query=${mapsQuery}`;
 
   <!-- ── STICKY CTA MÓVIL ────────────────────────────────────── -->
   <div
-    class="lg:hidden fixed bottom-0 inset-x-0 z-40 flex items-center justify-between gap-4 px-4 py-3"
+    id="sticky-cta"
+    class="lg:hidden fixed bottom-0 inset-x-0 z-40 flex items-center justify-between gap-4 px-4 py-3 transition-transform duration-300"
     style="background: #0A0E0B; border-top: 2px solid #0FCB46"
   >
     <div class="min-w-0">
@@ -352,5 +353,20 @@ const mapsLink = `https://www.google.com/maps/search/?api=1&query=${mapsQuery}`;
 
   if (slides.length > 1) {
     setInterval(() => goTo(current + 1), 5000);
+  }
+
+  // Oculta el sticky CTA cuando el formulario de reserva es visible
+  const stickyCta = document.getElementById('sticky-cta');
+  const reservarEl = document.getElementById('reservar');
+
+  if (stickyCta && reservarEl) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries[0].isIntersecting;
+        stickyCta.style.transform = visible ? 'translateY(110%)' : 'translateY(0)';
+      },
+      { threshold: 0.1 }
+    );
+    observer.observe(reservarEl);
   }
 </script>

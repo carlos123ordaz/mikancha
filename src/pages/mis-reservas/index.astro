@@ -14,11 +14,11 @@ const API_URL = import.meta.env.PUBLIC_API_URL;
   >
     <div class="absolute inset-0 pointer-events-none" style="background-image: linear-gradient(0deg, rgba(15,203,70,.06) 1px, transparent 1px); background-size: 100% 80px"></div>
 
-    <div class="relative max-w-3xl mx-auto">
+    <div class="relative max-w-4xl mx-auto">
       <div class="header-content flex flex-col gap-4">
         <span class="inline-flex items-center gap-2" style="font: 600 11px/1 'JetBrains Mono', monospace; letter-spacing: .15em; text-transform: uppercase; color: #0FCB46">
           <span style="width: 16px; height: 1.5px; background: #0FCB46; display: inline-block"></span>
-          Historial personal
+          02 · Historial personal
         </span>
         <h1 style="margin: 0; font: 900 clamp(36px, 6vw, 64px)/0.9 'Archivo', system-ui; letter-spacing: -.03em">
           Mis reservas.<br />
@@ -45,7 +45,7 @@ const API_URL = import.meta.env.PUBLIC_API_URL;
 
   <!-- ── CONTENT ─────────────────────────────────────────────── -->
   <section class="bg-mk-cream" style="padding: 48px 48px 80px">
-    <div style="max-width: 720px; margin: 0 auto">
+    <div class="max-w-4xl mx-auto">
       <MyReservations apiUrl={API_URL} client:load />
     </div>
   </section>
